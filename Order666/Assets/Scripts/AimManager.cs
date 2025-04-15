@@ -1,10 +1,10 @@
 using UnityEngine;
-using Unity.Cinemachine;
+using Cinemachine;
 
 
 public class AimManager : MonoBehaviour
 {
-    public InputAxis xAxis, yAxis;
+    public Cinemachine.AxisState xAxis, yAxis;
     [SerializeField] Transform camFollowPos;
 
    
@@ -18,9 +18,9 @@ public class AimManager : MonoBehaviour
     void Update()
     {
        
-        xAxis.UpdateRecentering(Time.deltaTime, xAxis.TrackValueChange());
+        xAxis.Update(Time.deltaTime);
 
-        yAxis.UpdateRecentering(Time.deltaTime, yAxis.TrackValueChange());
+        yAxis.Update(Time.deltaTime);
     }
 
     private void LateUpdate()
