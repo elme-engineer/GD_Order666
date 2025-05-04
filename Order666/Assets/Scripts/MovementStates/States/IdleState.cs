@@ -19,6 +19,13 @@ public class IdleState : MovementBaseState
 
         if (player.IsCrouchInitiated())
             player.SwitchState(player.Crouch);
+
+        if (player.IsJumpPressed() && player.controller.isGrounded)
+        {
+            player.previousState = this;
+            player.SwitchState(player.Jump);
+        }
+
     }
 
     public override void ExitState(PlayerController player)

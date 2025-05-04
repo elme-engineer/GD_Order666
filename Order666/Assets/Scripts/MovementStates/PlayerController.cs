@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
@@ -11,8 +12,10 @@ public class PlayerController : MonoBehaviour
 
     [Header("Jump & Gravity")]
     [SerializeField] private float gravity = -9.81f;
-    [SerializeField] private float jumpHeight = 3f;
+    [SerializeField] float jumpForce = 3f;
+    [HideInInspector] public bool jumped;
     private Vector3 velocity;
+    private bool hasJumpedThisFrame = false;
 
     [Header("Ground Check")]
     [SerializeField] private float groundYOffset;
@@ -35,12 +38,14 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public Vector3 dir;
 
     // State management
+    public MovementBaseState previousState;
     private MovementBaseState currentState;
     public bool crouchToggleEnabled = false; // This could later be updated by a game settings menu
     public IdleState Idle = new IdleState();
     public WalkState Walk = new WalkState();
     public CrouchState Crouch = new CrouchState();
     public RunState Run = new RunState();
+    public JumpState Jump = new JumpState();
 
     private static readonly int HzInputHash = Animator.StringToHash("hzInput");
     private static readonly int VInputHash = Animator.StringToHash("vInput");
@@ -56,14 +61,14 @@ public class PlayerController : MonoBehaviour
         playerInput.Enable();
         playerInput.Move.performed += OnMove;
         playerInput.Move.canceled += ctx => moveInput = Vector2.zero;
-        playerInput.Jump.performed += OnJump;
+
     }
 
     private void OnDisable()
     {
         playerInput.Move.performed -= OnMove;
         playerInput.Move.canceled -= ctx => moveInput = Vector2.zero;
-        playerInput.Jump.performed -= OnJump;
+        
         playerInput.Disable();
     }
 
@@ -84,6 +89,11 @@ public class PlayerController : MonoBehaviour
         animator.SetFloat(VInputHash, vInput);
 
         currentState.UpdateState(this);
+    }
+
+    private void LateUpdate()
+    {
+        hasJumpedThisFrame = false;
     }
 
     private void GetDirectionAndMove()
@@ -112,13 +122,15 @@ public class PlayerController : MonoBehaviour
         moveInput = context.ReadValue<Vector2>();
     }
 
-    private void OnJump(InputAction.CallbackContext context)
+    public void JumpForce()
     {
-        if (controller.isGrounded)
-        {
-            velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
-        }
+        if (hasJumpedThisFrame) return;
+
+        velocity.y = jumpForce;
+        hasJumpedThisFrame = true;
+
     }
+    public void Jumped() => jumped = true;
 
     private void ApplyGravity()
     {
@@ -147,6 +159,13 @@ public class PlayerController : MonoBehaviour
     public bool IsSprintPressed()
     {
         return Keyboard.current.leftShiftKey.isPressed || Gamepad.current?.leftStickButton.isPressed == true;
+    }
+
+    public bool IsJumpPressed()
+    {
+        
+        return playerInput.Jump.triggered;
+        
     }
 
     public bool IsCrouchPressed()

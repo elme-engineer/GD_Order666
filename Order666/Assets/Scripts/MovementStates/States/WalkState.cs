@@ -21,6 +21,12 @@ public class WalkState : MovementBaseState
         player.currentSpeed = player.vInput < 0
             ? player.walkBackSpeed
             : player.walkSpeed;
+
+        if (player.IsJumpPressed() && player.controller.isGrounded)
+        {
+            player.previousState = this;
+            Transition(player, player.Jump);
+        }
     }
 
     public override void ExitState(PlayerController player)
