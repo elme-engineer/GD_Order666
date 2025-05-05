@@ -12,7 +12,8 @@ public class PlayerController : MonoBehaviour
 
     [Header("Jump & Gravity")]
     [SerializeField] private float gravity = -9.81f;
-    [SerializeField] float jumpForce = 3f;
+//    [SerializeField] float jumpForce = 1f;
+    [SerializeField] float jumpHeight = 2.8f;
     [HideInInspector] public bool jumped;
     private Vector3 velocity;
     private bool hasJumpedThisFrame = false;
@@ -27,6 +28,10 @@ public class PlayerController : MonoBehaviour
 
     [HideInInspector] public CharacterController controller;
     [HideInInspector] public Animator animator;
+
+    [Header("Damage Cooldown")]
+    [SerializeField] private float dreamDamageCooldown = 1.5f; // seconds between damage
+    private float lastDreamDamageTime = -Mathf.Infinity;
 
     // Input system
     private PlayerInputActions inputActions;
@@ -126,7 +131,7 @@ public class PlayerController : MonoBehaviour
     {
         if (hasJumpedThisFrame) return;
 
-        velocity.y = jumpForce;
+        velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
         hasJumpedThisFrame = true;
 
     }
@@ -181,5 +186,24 @@ public class PlayerController : MonoBehaviour
         
         return IsCrouchPressed();
     }
+    
+    private void OnControllerColliderHit(ControllerColliderHit hit)
+    {
 
+        if (hit.collider.CompareTag("FriePlat"))
+        {
+            if (Time.time - lastDreamDamageTime >= dreamDamageCooldown)
+            {
+                Debug.Log("Player hit FriePlat!");
+
+                var status = GetComponentInChildren<PlayerStatus>();
+                if (status != null)
+                {
+                    status.TakeDreamDamage(10f);
+                    lastDreamDamageTime = Time.time;
+                }
+            }
+        }
+    }
+    
 }

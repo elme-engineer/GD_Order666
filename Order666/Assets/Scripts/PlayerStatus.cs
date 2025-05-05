@@ -29,7 +29,10 @@ public class PlayerStatus : MonoBehaviour
 
     public void TakeDreamDamage(float amount)
     {
+        Debug.Log("RECEIVED " + amount + " DMG!");
         currentDreamMeter = Mathf.Max(currentDreamMeter - amount, 0f);
+
+        Debug.Log("DreamMeter: " + currentDreamMeter);
         onDreamMeterChanged?.Invoke();
 
         if (currentDreamMeter <= 0f)

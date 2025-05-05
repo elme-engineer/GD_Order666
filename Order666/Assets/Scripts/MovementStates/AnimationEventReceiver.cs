@@ -15,7 +15,7 @@ public class AnimationEventReceiver : MonoBehaviour
 
     public void JumpedForce()
     {
-        Debug.Log("JumpForce animation event triggered");
+        //Debug.Log("JumpForce animation event triggered");
         if (playerController != null)
         {
             playerController.JumpForce();
