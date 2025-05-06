@@ -8,6 +8,7 @@ public class MovingPlatform : MonoBehaviour
     public float moveSpeed = 2f;
     public float delayBetweenMoves = 2f;
     public float dreamDamage = 10f;
+    public float startDelayTime = 2.5f;
 
     private Vector3 startPosition;
     private Vector3 targetPosition;
@@ -24,7 +25,7 @@ public class MovingPlatform : MonoBehaviour
 
         if (CompareTag("FriePlat"))
         {
-            StartCoroutine(DelayedStart(2f));
+            StartCoroutine(DelayedStart());
         }
         else if (CompareTag("NickiPlat") && !isSafeZone)
         {
@@ -33,9 +34,9 @@ public class MovingPlatform : MonoBehaviour
             
     }
 
-    private IEnumerator DelayedStart(float delay)
+    private IEnumerator DelayedStart()
     {
-        yield return new WaitForSeconds(delay);
+        yield return new WaitForSeconds(startDelayTime);
         StartCoroutine(MoveRoutine());
     }
 

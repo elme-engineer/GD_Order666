@@ -39,11 +39,14 @@ public class AimManager : MonoBehaviour
 
     void Update()
     {
-        // Determine if input is from mouse or gamepad
         bool isGamepad = Gamepad.current != null && Gamepad.current.rightStick.ReadValue() != Vector2.zero;
 
-        float x = lookInput.x * (isGamepad ? controllerSensitivity : mouseSensitivity);
-        float y = lookInput.y * (isGamepad ? controllerSensitivity : mouseSensitivity);
+        float xSensitivity = isGamepad ? controllerSensitivity : mouseSensitivity;
+        float ySensitivity = isGamepad ? controllerSensitivity : mouseSensitivity;
+
+        // Scale controller input by deltaTime to reduce sensitivity
+        float x = lookInput.x * xSensitivity * Time.deltaTime;
+        float y = lookInput.y * ySensitivity * Time.deltaTime;
 
         xAxis.m_InputAxisValue = x;
         yAxis.m_InputAxisValue = y;
@@ -51,7 +54,6 @@ public class AimManager : MonoBehaviour
         xAxis.Update(Time.deltaTime);
         yAxis.Update(Time.deltaTime);
 
-        // Clamp vertical rotation
         yAxis.Value = Mathf.Clamp(yAxis.Value, -80f, 80f);
     }
 

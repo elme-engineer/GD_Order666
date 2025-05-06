@@ -29,8 +29,9 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public CharacterController controller;
     [HideInInspector] public Animator animator;
 
-    [Header("Damage Cooldown")]
+    [Header("Damage")]
     [SerializeField] private float dreamDamageCooldown = 1.5f; // seconds between damage
+    [SerializeField] private float dreamDamage = 10;
     private float lastDreamDamageTime = -Mathf.Infinity;
 
     // Input system
@@ -194,14 +195,22 @@ public class PlayerController : MonoBehaviour
         {
             if (Time.time - lastDreamDamageTime >= dreamDamageCooldown)
             {
-                Debug.Log("Player hit FriePlat!");
+                //Debug.Log("Player hit FriePlat!");
+
+                var soundScript = hit.collider.GetComponent<PlaySoundOnCollision>();
+                if (soundScript != null)
+                {
+                    soundScript.PlaySound();
+                }
 
                 var status = GetComponentInChildren<PlayerStatus>();
                 if (status != null)
                 {
-                    status.TakeDreamDamage(10f);
+                    status.TakeDreamDamage(dreamDamage);
                     lastDreamDamageTime = Time.time;
                 }
+
+                
             }
         }
     }
