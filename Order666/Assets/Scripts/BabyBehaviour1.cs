@@ -8,12 +8,13 @@ public class BabyBehaviour : MonoBehaviour
     [Tooltip("The cat ammo to appear after explosion")]
     public GameObject catAmmo;
 
+    [Tooltip("The sound to play on explosion")]
+    public AudioClip explosionSound;
+
     private bool hasExploded = false;
 
     void OnCollisionEnter(Collision collision)
     {
-        // Exit early if already exploded or not hitting ground
-        //if (hasExploded || !collision.gameObject.CompareTag("Ground"))
         if (hasExploded)
             return;
 
@@ -25,6 +26,12 @@ public class BabyBehaviour : MonoBehaviour
 
         // Get exact collision point & normal
         ContactPoint contact = collision.contacts[0];
+
+        // Play explosion sound at the point of contact
+        if (explosionSound != null)
+        {
+            AudioSource.PlayClipAtPoint(explosionSound, contact.point);
+        }
 
         // Spawn explosion at impact point, oriented to surface normal
         ParticleSystem explosion = Instantiate(

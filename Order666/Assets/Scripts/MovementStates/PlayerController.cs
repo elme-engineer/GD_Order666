@@ -10,9 +10,9 @@ public class PlayerController : MonoBehaviour
     public float runSpeed = 7, runBackSpeed = 5;
     public float crouchSpeed = 2, crouchBackSpeed = 1;
 
+
     [Header("Jump & Gravity")]
     [SerializeField] private float gravity = -9.81f;
-//    [SerializeField] float jumpForce = 1f;
     [SerializeField] float jumpHeight = 2.8f;
     [HideInInspector] public bool jumped;
     private Vector3 velocity;
@@ -30,7 +30,7 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public Animator animator;
 
     [Header("Damage")]
-    [SerializeField] private float dreamDamageCooldown = 1.5f; // seconds between damage
+    [SerializeField] private float dreamDamageCooldown = 1.5f;
     [SerializeField] private float dreamDamage = 10;
     private float lastDreamDamageTime = -Mathf.Infinity;
 
@@ -46,12 +46,16 @@ public class PlayerController : MonoBehaviour
     // State management
     public MovementBaseState previousState;
     private MovementBaseState currentState;
-    public bool crouchToggleEnabled = false; // This could later be updated by a game settings menu
+    public bool crouchToggleEnabled = false;
     public IdleState Idle = new IdleState();
     public WalkState Walk = new WalkState();
     public CrouchState Crouch = new CrouchState();
     public RunState Run = new RunState();
     public JumpState Jump = new JumpState();
+
+    // Platform sound tracking
+    private GameObject lastPlatformTouched = null;
+    private bool wasGroundedLastFrame = false;
 
     private static readonly int HzInputHash = Animator.StringToHash("hzInput");
     private static readonly int VInputHash = Animator.StringToHash("vInput");
@@ -67,14 +71,12 @@ public class PlayerController : MonoBehaviour
         playerInput.Enable();
         playerInput.Move.performed += OnMove;
         playerInput.Move.canceled += ctx => moveInput = Vector2.zero;
-
     }
 
     private void OnDisable()
     {
         playerInput.Move.performed -= OnMove;
         playerInput.Move.canceled -= ctx => moveInput = Vector2.zero;
-        
         playerInput.Disable();
     }
 
@@ -84,10 +86,20 @@ public class PlayerController : MonoBehaviour
         controller = GetComponent<CharacterController>();
         cam = Camera.main.transform;
         SwitchState(Idle);
+        if (trollfaceImage != null)
+            trollfaceImage.color = new Color(1, 1, 1, 0);
     }
 
     private void Update()
     {
+        // Track ground state for platform sounds
+        if (wasGroundedLastFrame && !controller.isGrounded)
+        {
+            lastPlatformTouched = null;
+        }
+        wasGroundedLastFrame = controller.isGrounded;
+
+        // Original movement logic
         GetDirectionAndMove();
         ApplyGravity();
 
@@ -131,11 +143,10 @@ public class PlayerController : MonoBehaviour
     public void JumpForce()
     {
         if (hasJumpedThisFrame) return;
-
         velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
         hasJumpedThisFrame = true;
-
     }
+
     public void Jumped() => jumped = true;
 
     private void ApplyGravity()
@@ -169,9 +180,7 @@ public class PlayerController : MonoBehaviour
 
     public bool IsJumpPressed()
     {
-        
         return playerInput.Jump.triggered;
-        
     }
 
     public bool IsCrouchPressed()
@@ -181,38 +190,81 @@ public class PlayerController : MonoBehaviour
 
     public bool IsCrouchInitiated()
     {
-        // This handles both toggle and hold detection
         if (crouchToggleEnabled)
             return Keyboard.current.leftCtrlKey.wasPressedThisFrame || Gamepad.current?.buttonEast.wasPressedThisFrame == true;
-        
         return IsCrouchPressed();
     }
-    
+
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
+        if (!controller.isGrounded) return;
 
         if (hit.collider.CompareTag("FriePlat"))
         {
-            if (Time.time - lastDreamDamageTime >= dreamDamageCooldown)
+            HandleFriePlatCollision(hit);
+        }
+        else if (hit.collider.CompareTag("NickiPlat") || hit.collider.CompareTag("SafeZone"))
+        {
+            HandleNonDamagingCollision(hit);
+        }
+        if (hit.collider.GetComponent<IsTrollPlatform>() != null)
+        {
+            ShowTrollfaceUI();
+        }
+    }
+
+    private void HandleFriePlatCollision(ControllerColliderHit hit)
+    {
+        if (Time.time - lastDreamDamageTime >= dreamDamageCooldown)
+        {
+            PlayCollisionSound(hit);
+
+            var status = GetComponentInChildren<PlayerStatus>();
+            if (status != null)
             {
-                //Debug.Log("Player hit FriePlat!");
-
-                var soundScript = hit.collider.GetComponent<PlaySoundOnCollision>();
-                if (soundScript != null)
-                {
-                    soundScript.PlaySound();
-                }
-
-                var status = GetComponentInChildren<PlayerStatus>();
-                if (status != null)
-                {
-                    status.TakeDreamDamage(dreamDamage);
-                    lastDreamDamageTime = Time.time;
-                }
-
-                
+                status.TakeDreamDamage(dreamDamage);
+                lastDreamDamageTime = Time.time;
             }
         }
     }
-    
+
+    private void HandleNonDamagingCollision(ControllerColliderHit hit)
+    {
+        if (lastPlatformTouched != hit.collider.gameObject)
+        {
+            PlayCollisionSound(hit);
+            lastPlatformTouched = hit.collider.gameObject;
+        }
+    }
+
+    private void PlayCollisionSound(ControllerColliderHit hit)
+    {
+        var soundScript = hit.collider.GetComponent<PlaySoundOnCollision>();
+        if (soundScript != null)
+        {
+            soundScript.PlaySound();
+        }
+    }
+    [Header("Trollface UI")]
+    public UnityEngine.UI.Image trollfaceImage;
+    public float trollfaceDisplayDuration = 2f;
+    private Coroutine trollfaceCoroutine;
+
+    private void ShowTrollfaceUI()
+    {
+        if (trollfaceCoroutine != null)
+            StopCoroutine(trollfaceCoroutine);
+        trollfaceCoroutine = StartCoroutine(ShowTrollface());
+    }
+
+    private System.Collections.IEnumerator ShowTrollface()
+    {
+        if (trollfaceImage != null)
+        {
+            trollfaceImage.color = new Color(1, 1, 1, 1); // Show
+            yield return new WaitForSeconds(trollfaceDisplayDuration);
+            trollfaceImage.color = new Color(1, 1, 1, 0); // Hide
+        }
+    }
 }
+
