@@ -6,7 +6,7 @@ public class BabyBehaviour : MonoBehaviour
     public ParticleSystem explosionEffect;
 
     [Tooltip("The cat ammo to appear after explosion")]
-    public GameObject catAmmo;
+    public GameObject Obama;
 
     [Tooltip("The sound to play on explosion")]
     public AudioClip explosionSound;
@@ -45,7 +45,7 @@ public class BabyBehaviour : MonoBehaviour
         ExplosionManager explosionManager = Object.FindFirstObjectByType<ExplosionManager>();
         if (explosionManager != null)
         {
-            explosionManager.TriggerExplosion(contact.point, explosion, catAmmo);
+            explosionManager.TriggerExplosion(contact.point, explosion, Obama);
         }
 
         // Hide baby (disabling is safer than destroying for particle parenting)
