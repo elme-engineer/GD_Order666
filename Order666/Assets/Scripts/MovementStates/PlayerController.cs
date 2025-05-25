@@ -88,6 +88,8 @@ public class PlayerController : MonoBehaviour
         SwitchState(Idle);
         if (trollfaceImage != null)
             trollfaceImage.color = new Color(1, 1, 1, 0);
+        if (catAmmoPrefab != null)
+            catAmmoPrefab.SetActive(false);
     }
 
     private void Update()
@@ -211,6 +213,10 @@ public class PlayerController : MonoBehaviour
         {
             ShowTrollfaceUI();
         }
+        if (hit.collider.CompareTag("Rat"))
+        {
+            SpawnCatAmmoAtRat(hit.collider.transform.position, hit.collider.gameObject);
+        }
     }
 
     private void HandleFriePlatCollision(ControllerColliderHit hit)
@@ -266,4 +272,22 @@ public class PlayerController : MonoBehaviour
             trollfaceImage.color = new Color(1, 1, 1, 0); // Hide
         }
     }
+
+    [Header("Cat Ammo Spawn")]
+    public GameObject catAmmoPrefab;
+
+    // this should NOT be inside another method
+    private void SpawnCatAmmoAtRat(Vector3 position, GameObject rat)
+    {
+        if (catAmmoPrefab != null)
+        {
+            Vector3 offsetPosition = position + new Vector3(0, 0.1f, -5f);
+            catAmmoPrefab.transform.position = offsetPosition;
+            catAmmoPrefab.SetActive(true);
+        }
+    }
+
+
+
+
 }

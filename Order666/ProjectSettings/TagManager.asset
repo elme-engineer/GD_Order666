@@ -8,6 +8,7 @@ TagManager:
   - FriePlat
   - NickiPlat
   - CatWeaponPickup
+  - Rat
   layers:
   - Default
   - TransparentFX
