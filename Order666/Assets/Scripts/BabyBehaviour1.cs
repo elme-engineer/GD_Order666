@@ -2,53 +2,59 @@ using UnityEngine;
 
 public class BabyBehaviour : MonoBehaviour
 {
-    [Tooltip("The explosion particle effect to play on impact")]
-    public ParticleSystem explosionEffect;
-
-    [Tooltip("The cat ammo to appear after explosion")]
-    public GameObject Obama;
-
-    [Tooltip("The sound to play on explosion")]
+    [Header("Effects")]
+    public ParticleSystem explosionEffectPrefab;
     public AudioClip explosionSound;
 
+    private GameObject obamaPrefab;
+    private ExplosionManager explosionManager;
     private bool hasExploded = false;
+
+    public void Setup(GameObject obamaPrefab)
+    {
+        this.obamaPrefab = obamaPrefab;
+        explosionManager = FindObjectOfType<ExplosionManager>();
+    }
 
     void OnCollisionEnter(Collision collision)
     {
-        if (hasExploded)
-            return;
-
+        if (hasExploded) return;
         hasExploded = true;
+        Explode(collision);
+    }
 
-        // Disable collider to prevent further collisions
+    private void Explode(Collision collision)
+    {
+        // Disable physics
         if (TryGetComponent<Collider>(out var collider))
             collider.enabled = false;
 
-        // Get exact collision point & normal
+        if (TryGetComponent<Rigidbody>(out var rb))
+            rb.isKinematic = true;
+
+        // Get collision point
         ContactPoint contact = collision.contacts[0];
 
-        // Play explosion sound at the point of contact
+        // Play sound
         if (explosionSound != null)
         {
             AudioSource.PlayClipAtPoint(explosionSound, contact.point);
         }
 
-        // Spawn explosion at impact point, oriented to surface normal
-        ParticleSystem explosion = Instantiate(
-            explosionEffect,
-            contact.point,
-            Quaternion.LookRotation(contact.normal)
-        );
-        explosion.Play();
+        // Hide baby
+        GetComponent<Renderer>().enabled = false;
 
-        // Use ExplosionManager to trigger the explosion logic
-        ExplosionManager explosionManager = Object.FindFirstObjectByType<ExplosionManager>();
-        if (explosionManager != null)
+        // Notify explosion manager
+        if (explosionManager != null && explosionEffectPrefab != null)
         {
-            explosionManager.TriggerExplosion(contact.point, explosion, Obama);
+            explosionManager.HandleExplosion(
+                contact.point,
+                explosionEffectPrefab,
+                obamaPrefab
+            );
         }
 
-        // Hide baby (disabling is safer than destroying for particle parenting)
-        gameObject.SetActive(false);
+        // Destroy baby after short delay
+        Destroy(gameObject, 1f);
     }
 }

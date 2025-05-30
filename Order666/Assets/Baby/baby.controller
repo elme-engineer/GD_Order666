@@ -10,8 +10,8 @@ AnimatorStateMachine:
   m_Name: Base Layer
   m_ChildStates:
   - serializedVersion: 1
-    m_State: {fileID: -5324661905145937863}
-    m_Position: {x: 311.71167, y: 102.43184, z: 0}
+    m_State: {fileID: -4623582098787138988}
+    m_Position: {x: 325.7846, y: 112.17465, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions: []
   m_EntryTransitions: []
@@ -21,8 +21,8 @@ AnimatorStateMachine:
   m_EntryPosition: {x: 50, y: 120, z: 0}
   m_ExitPosition: {x: 800, y: 120, z: 0}
   m_ParentStateMachinePosition: {x: 800, y: 20, z: 0}
-  m_DefaultState: {fileID: -5324661905145937863}
---- !u!1102 &-5324661905145937863
+  m_DefaultState: {fileID: -4623582098787138988}
+--- !u!1102 &-4623582098787138988
 AnimatorState:
   serializedVersion: 6
   m_ObjectHideFlags: 1
@@ -30,7 +30,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: BabyMadness
-  m_Speed: 2
+  m_Speed: 1
   m_CycleOffset: 0
   m_Transitions: []
   m_StateMachineBehaviours: []
@@ -42,7 +42,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: -1422011007694221501, guid: a1bc729045cd84d9787c268a134e6df2, type: 3}
+  m_Motion: {fileID: 7400000, guid: 89634e8d8bc334a5a98287f9999aa9da, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 

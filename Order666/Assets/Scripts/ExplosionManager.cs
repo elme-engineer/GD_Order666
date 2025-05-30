@@ -1,38 +1,49 @@
-
 using System.Collections;
 using UnityEngine;
 
 public class ExplosionManager : MonoBehaviour
 {
-    // This method will be called to trigger the explosion and cat ammo logic
-    public void TriggerExplosion(Vector3 position, ParticleSystem explosionEffect, GameObject Obama)
+    [Header("References")]
+    public RandomBabySpawner spawner;
+
+    [Header("Settings")]
+    public float obamaSpawnHeight = 1f;
+    public float cleanupDelay = 1f;
+
+    public void HandleExplosion(Vector3 position, ParticleSystem explosionPrefab, GameObject obamaPrefab)
     {
-        StartCoroutine(WaitForExplosionAndShowAmmo(explosionEffect, position, Obama));
+        if (this == null || !this.isActiveAndEnabled) return;
+
+        StartCoroutine(ExplosionSequence(position, explosionPrefab, obamaPrefab));
     }
 
-    // Coroutine to wait for the explosion to finish and show the cat ammo
-    private IEnumerator WaitForExplosionAndShowAmmo(ParticleSystem explosion, Vector3 position, GameObject Obama)
+    private IEnumerator ExplosionSequence(Vector3 position, ParticleSystem explosionPrefab, GameObject obamaPrefab)
     {
-        yield return new WaitForSeconds(explosion.main.duration);
+        // Instantiate new explosion from prefab
+        ParticleSystem explosionInstance = Instantiate(explosionPrefab, position, Quaternion.identity);
+        explosionInstance.Play();
 
-        // Check if the cat ammo exists
-        if (Obama != null)
+        // Wait for explosion to finish
+        yield return new WaitForSeconds(explosionInstance.main.duration);
+
+        // Spawn Obama from prefab
+        if (obamaPrefab != null)
         {
-            // Adjust the Z position to make the cat ammo a little higher
-            Vector3 newPosition = new Vector3(position.x, position.y + 1f, position.z); // Adjust 1f to your desired height
-
-            // Set the new position with the adjusted Z
-            Obama.transform.position = newPosition;
-
-            // Activate the cat ammo
-            Obama.SetActive(true);
-
-            Debug.Log("Obama: " + Obama.transform.position);
+            Vector3 spawnPos = new Vector3(
+                position.x,
+                position.y + obamaSpawnHeight,
+                position.z
+            );
+            Instantiate(obamaPrefab, spawnPos, Quaternion.identity);
         }
-        // Destroy the explosion effect after it finishes
-        Destroy(explosion.gameObject);
+
+        // Clean up
+        Destroy(explosionInstance.gameObject, cleanupDelay);
+
+        // Trigger next wave if spawner exists
+        if (spawner != null && spawner.isActiveAndEnabled)
+        {
+            spawner.StartNextWave();
+        }
     }
 }
-
-
-
