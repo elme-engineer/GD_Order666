@@ -14,7 +14,7 @@ public class CutsceneManager : MonoBehaviour
 
     void OnVideoEnd(VideoPlayer vp)
     {
-        SceneManager.LoadScene("SampleScene"); // Replace with your exact scene name
+        SceneManager.LoadScene("Game"); // Replace with your exact scene name
     }
 }
 
