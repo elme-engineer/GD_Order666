@@ -34,6 +34,13 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float dreamDamage = 10;
     private float lastDreamDamageTime = -Mathf.Infinity;
 
+    [Header("Porta Settings")]
+    public Animator portaEsquerda;
+    public Animator portaDireita;
+    public AudioSource gateAudio;
+    public AudioClip gateSound;
+    private bool portasAbertas = false;
+
     // Input system
     private PlayerInputActions inputActions;
     public PlayerInputActions.PlayerActions playerInput;
@@ -205,10 +212,18 @@ public class PlayerController : MonoBehaviour
         {
             HandleFriePlatCollision(hit);
         }
+        else if (hit.collider.CompareTag("Level2Trigger") && !portasAbertas)
+        {
+            AbrirPortas();
+            portasAbertas = true;
+        }
+
         else if (hit.collider.CompareTag("NickiPlat") || hit.collider.CompareTag("SafeZone"))
         {
             HandleNonDamagingCollision(hit);
         }
+
+        // Estas verificações devem ser separadas pois não são exclusivas
         if (hit.collider.GetComponent<IsTrollPlatform>() != null)
         {
             ShowTrollfaceUI();
@@ -273,6 +288,27 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private void AbrirPortas()
+    {
+        if (portaEsquerda != null)
+            portaEsquerda.SetTrigger("Open");
+
+        if (portaDireita != null)
+            portaDireita.SetTrigger("Open");
+
+        // Toca o som (versão robusta)
+        if (gateAudio != null)
+        {
+            if (gateSound != null)
+            {
+                gateAudio.PlayOneShot(gateSound); // Preferível para efeitos pontuais
+            }
+            else if (gateAudio.clip != null)
+            {
+                gateAudio.Play(); // Usa o clip atribuído diretamente no AudioSource
+            }
+        }
+    }
     [Header("Cat Ammo Spawn")]
     public GameObject catAmmoPrefab;
 

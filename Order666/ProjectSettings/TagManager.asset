@@ -9,6 +9,7 @@ TagManager:
   - NickiPlat
   - CatWeaponPickup
   - Rat
+  - Level2Trigger
   layers:
   - Default
   - TransparentFX
