@@ -93,6 +93,7 @@ public class PlayerController : MonoBehaviour
         controller = GetComponent<CharacterController>();
         cam = Camera.main.transform;
         SwitchState(Idle);
+
         if (trollfaceImage != null)
             trollfaceImage.color = new Color(1, 1, 1, 0);
         if (catAmmoPrefab != null)
@@ -214,7 +215,8 @@ public class PlayerController : MonoBehaviour
         }
         else if (hit.collider.CompareTag("Level2Trigger") && !portasAbertas)
         {
-            AbrirPortas();
+            Debug.Log("Trigger de abertura de portas detetado.");
+            AbrirPortas(); // <- só será chamado 1x
             portasAbertas = true;
         }
 
