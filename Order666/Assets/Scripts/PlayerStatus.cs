@@ -8,8 +8,8 @@ public class PlayerStatus : MonoBehaviour
     [SerializeField] private float currentDreamMeter;
 
     [Header("Ammo")]
-    [SerializeField] private int maxAmmo = 30;
-    [SerializeField] private int currentAmmo;
+    [SerializeField] public int maxAmmo = 60;
+    [SerializeField] public int currentAmmo = 30;
 
     [Header("Events")]
     public UnityEvent onDreamMeterChanged;
@@ -19,7 +19,7 @@ public class PlayerStatus : MonoBehaviour
     private void Awake()
     {
         currentDreamMeter = maxDreamMeter;
-        currentAmmo = maxAmmo;
+        //currentAmmo = maxAmmo;
     }
 
     // === Dream Meter Methods ===

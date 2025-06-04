@@ -10,6 +10,7 @@ TagManager:
   - CatWeaponPickup
   - Rat
   - Level2Trigger
+  - BounceWall
   layers:
   - Default
   - TransparentFX

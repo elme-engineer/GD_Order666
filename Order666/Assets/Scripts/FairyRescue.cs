@@ -3,9 +3,17 @@ using UnityEngine;
 
 public class FairyRescue : MonoBehaviour
 {
+
+    public enum RescueReason { Fall, Fryer }
+
+    [Header("Safe Points")]
+    public Transform fallSafePoint;
+    public Transform fryerSafePoint;
+
+    private Transform safePoint;
+
     [Header("References")]
     public Transform player;
-    public Transform safePoint;
     public ParticleSystem fairyParticles;
 
     [Header("Audio")]
@@ -13,7 +21,7 @@ public class FairyRescue : MonoBehaviour
     public AudioClip rescueSound;   // ← Assign your sound clip here
 
     [Header("Settings")]
-    public float fallThreshold = -20f;
+    public float fallThreshold = -15f;
     public float flySpeed = 5f;
     public float carryHeight = 2f;
     public float rescueDelay = 0.5f;
@@ -47,11 +55,23 @@ public class FairyRescue : MonoBehaviour
         if (!isRescuing && player.position.y < fallThreshold)
         {
             Debug.Log("Fall detected - initiating rescue");
-            StartCoroutine(RescuePlayer());
+            safePoint = fallSafePoint;
+            StartCoroutine(RescuePlayer(RescueReason.Fall));
         }
     }
 
-    IEnumerator RescuePlayer()
+    public void TriggerFryerRescue()
+    {
+        if (!isRescuing)
+        {
+            Debug.Log("Fryer touched - initiating fryer rescue");
+            safePoint = fryerSafePoint;
+            StartCoroutine(RescuePlayer(RescueReason.Fryer));
+        }
+    }
+
+
+    IEnumerator RescuePlayer(RescueReason reason)
     {
         isRescuing = true;
         SetFairyEffects(true);
@@ -132,6 +152,8 @@ public class FairyRescue : MonoBehaviour
         if (fairyLight != null)
             fairyLight.enabled = active;
     }
+
+
 }
 
 
