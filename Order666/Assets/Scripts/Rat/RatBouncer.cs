@@ -29,7 +29,7 @@ public class RatBouncer : MonoBehaviour
         if (player != null)
             playerStatus = player.GetComponentInChildren<PlayerStatus>();
 
-        Debug.Log("Ammo: " + playerStatus.currentAmmo);
+     //   Debug.Log("Ammo: " + playerStatus.currentAmmo);
     }
 
 
@@ -64,14 +64,15 @@ public class RatBouncer : MonoBehaviour
 
         if (playerStatus.currentAmmo <= playerStatus.maxAmmo / 2f)
         {
-            Debug.Log("Trying to spawn ammo");
-
             float roll = Random.value;
             if (roll <= ammoDropChance)
             {
                 Vector3 dropPosition = transform.position - moveDirection.normalized * 1.5f;
-                Instantiate(ammoPickupPrefab, dropPosition, Quaternion.identity);
+                GameObject ammo = Instantiate(ammoPickupPrefab, dropPosition, Quaternion.identity);
+                //Debug.Log("Parent Position: " + ammo.transform.position + " | Child Local: " + ammo.transform.GetChild(0).localPosition);
+
             }
         }
     }
+
 }
