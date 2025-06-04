@@ -16,26 +16,59 @@ public class RandomBabySpawner : MonoBehaviour
     public bool continuousSpawning = true;
 
     [Header("Limits")]
-    public int maxTotalBabies = 30; // 🆕 Max total number of babies
-    private int totalBabiesSpawned = 0; // 🆕 Count of babies spawned
+    public int maxTotalBabies = 30;       // Max total babies that can ever spawn
+    private int totalBabiesSpawned = 0;   // How many we’ve spawned so far
+
+    [Header("Player Reference")]
+    public PlayerStatus playerStatus;     // Drag your Player (with PlayerStatus) here
 
     private bool isSpawning = false;
 
-    void Start()
+    private void Start()
     {
-        StartNextWave();
+        // Start a coroutine that only spawns once the player’s DreamMeter is ≤ 50%
+        StartCoroutine(SpawnWhenLowLife());
     }
 
-    public void StartNextWave()
+    /// <summary>
+    /// Wait until player’s life ≤ half, then spawn a wave, wait delayBetweenWaves, and repeat
+    /// until we hit maxTotalBabies.
+    /// </summary>
+    private IEnumerator SpawnWhenLowLife()
     {
-        if (!isSpawning && totalBabiesSpawned < maxTotalBabies)
+        // Keep doing waves until we reach the total‐babies limit
+        while (totalBabiesSpawned < maxTotalBabies)
         {
-            StartCoroutine(SpawnWave());
+            // Wait until playerStatus is assigned & player’s life ≤ 50%
+            if (playerStatus != null &&
+                playerStatus.DreamMeter <= (playerStatus.MaxDreamMeter / 2f))
+            {
+                // Player is “low on life” → do one wave
+                yield return StartCoroutine(SpawnWave());
+
+                // After the wave, wait delayBetweenWaves (unless we’re already at max)
+                if (totalBabiesSpawned < maxTotalBabies && continuousSpawning)
+                {
+                    yield return new WaitForSeconds(delayBetweenWaves);
+                }
+            }
+            else
+            {
+                // Not low enough yet (or playerStatus is missing) → recheck in 1 second
+                yield return new WaitForSeconds(1f);
+            }
         }
+        // Once we hit maxTotalBabies, the loop ends, and no more spawning happens
     }
 
+    /// <summary>
+    /// Spawns “babiesPerWave” baby Prefabs, each separated by delayBetweenBabies.
+    /// </summary>
     private IEnumerator SpawnWave()
     {
+        if (isSpawning)
+            yield break; // Already spawning (shouldn't happen), so do nothing.
+
         isSpawning = true;
 
         for (int i = 0; i < babiesPerWave; i++)
@@ -47,32 +80,34 @@ public class RandomBabySpawner : MonoBehaviour
             {
                 SpawnBaby();
             }
+
+            // Wait between each baby spawn
             yield return new WaitForSeconds(delayBetweenBabies);
         }
 
         isSpawning = false;
-
-        if (continuousSpawning && totalBabiesSpawned < maxTotalBabies)
-        {
-            yield return new WaitForSeconds(delayBetweenWaves);
-            StartNextWave();
-        }
     }
 
+    /// <summary>
+    /// Instantiates a single baby at a random XZ position (within spawnAreaWidth),
+    /// at fixed height “spawnHeight.” Then calls Setup() so BabyBehavior knows which Obama prefab to spawn.
+    /// </summary>
     private void SpawnBaby()
     {
-        Vector3 spawnPosition = transform.position + new Vector3(
+        Vector3 randomOffset = new Vector3(
             Random.Range(-spawnAreaWidth / 2f, spawnAreaWidth / 2f),
-            spawnHeight,
+            0f,
             Random.Range(-spawnAreaWidth / 2f, spawnAreaWidth / 2f)
         );
 
-        GameObject baby = Instantiate(babyPrefab, spawnPosition, Quaternion.identity);
-        totalBabiesSpawned++; // 🆕 Increment the count
+        Vector3 spawnPos = transform.position + randomOffset + Vector3.up * spawnHeight;
+        GameObject babyGO = Instantiate(babyPrefab, spawnPos, Quaternion.identity);
+        totalBabiesSpawned++;
 
-        BabyBehaviour babyScript = baby.GetComponent<BabyBehaviour>();
+        BabyBehaviour babyScript = babyGO.GetComponent<BabyBehaviour>();
         if (babyScript != null)
         {
+            // Pass along the Obama prefab so that when the baby “explodes,” we know what to spawn
             babyScript.Setup(obamaPrefab);
         }
     }
