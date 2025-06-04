@@ -162,13 +162,15 @@ GameObject:
   m_Component:
   - component: {fileID: 426091463264595791}
   - component: {fileID: 2510598324366592747}
+  - component: {fileID: 6716814463980332019}
+  - component: {fileID: 6833592131389908996}
   m_Layer: 0
   m_Name: Obama
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &426091463264595791
 Transform:
   m_ObjectHideFlags: 0
@@ -208,3 +210,37 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!65 &6716814463980332019
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6594974119517582598}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1.4074469, y: 1.145402, z: 1.2371578}
+  m_Center: {x: 0.012318343, y: 0.4991578, z: -0.010505557}
+--- !u!114 &6833592131389908996
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6594974119517582598}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 463e721e38874664483bc8312d5e22eb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dreamRestoreAmount: 50
