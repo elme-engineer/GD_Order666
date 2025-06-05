@@ -19,10 +19,7 @@ public class PlayerStatus : MonoBehaviour
     private void Awake()
     {
         currentDreamMeter = maxDreamMeter;
-        //currentAmmo = maxAmmo;
     }
-
-    // === Dream Meter Methods ===
 
     public float DreamMeter => currentDreamMeter;
     public float MaxDreamMeter => maxDreamMeter;
@@ -50,8 +47,6 @@ public class PlayerStatus : MonoBehaviour
     public void FullyRestoreDream() => RestoreDream(maxDreamMeter);
 
     public bool IsDreamBroken => currentDreamMeter <= 0f;
-
-    // === Ammo Methods ===
 
     public int Ammo => currentAmmo;
     public int MaxAmmo => maxAmmo;

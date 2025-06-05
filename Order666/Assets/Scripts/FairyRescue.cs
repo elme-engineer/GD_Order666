@@ -86,11 +86,11 @@ public class FairyRescue : MonoBehaviour
                 player.position.z + offsetZ
             );
 
-            Debug.Log($"✅ Safe point set near fall position at {safePoint.position}");
+            Debug.Log($"Safe point set near fall position at {safePoint.position}");
         }
         else
         {
-            Debug.LogWarning("⚠️ No ground detected - using fallback at Y = 0");
+            Debug.LogWarning("No ground detected - using fallback at Y = 0");
             safePoint = new GameObject("FallbackSafePoint").transform;
             safePoint.position = new Vector3(player.position.x, 0f, player.position.z);
         }
@@ -185,8 +185,6 @@ public class FairyRescue : MonoBehaviour
             fairyLight.enabled = active;
     }
 }
-
-
 
 
 

@@ -31,6 +31,6 @@ public class AmmoUI : MonoBehaviour
 
         int current = playerStatus.Ammo;
         int maxAmmo = playerStatus.MaxAmmo;
-        ammoText.text = $"{current} / {maxAmmo}";
+        ammoText.text = $"{current}/{maxAmmo}";
     }
 }

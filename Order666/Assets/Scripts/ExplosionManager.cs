@@ -13,19 +13,20 @@ public class ExplosionManager : MonoBehaviour
     public void HandleExplosion(Vector3 position, ParticleSystem explosionPrefab, GameObject obamaPrefab)
     {
         if (this == null || !this.isActiveAndEnabled) return;
+
         StartCoroutine(ExplosionSequence(position, explosionPrefab, obamaPrefab));
     }
 
     private IEnumerator ExplosionSequence(Vector3 position, ParticleSystem explosionPrefab, GameObject obamaPrefab)
     {
-        // 1) Instantiate and play the explosion effect
+        // Instantiate new explosion from prefab
         ParticleSystem explosionInstance = Instantiate(explosionPrefab, position, Quaternion.identity);
         explosionInstance.Play();
 
-        // 2) Wait for the explosion’s particle duration
+        // Wait for explosion to finish
         yield return new WaitForSeconds(explosionInstance.main.duration);
 
-        // 3) Spawn an Obama prefab slightly above the explosion point
+        // Spawn Obama from prefab
         if (obamaPrefab != null)
         {
             Vector3 spawnPos = new Vector3(
@@ -36,17 +37,13 @@ public class ExplosionManager : MonoBehaviour
             Instantiate(obamaPrefab, spawnPos, Quaternion.identity);
         }
 
-        // 4) Clean up the particle object after a delay
+        // Clean up
         Destroy(explosionInstance.gameObject, cleanupDelay);
 
-        // ———— REMOVE THIS BLOCK ————
-        // We used to call StartNextWave() here, but that no longer exists in RandomBabySpawner.
-        // If you want “explosions” to trigger new waves, add your own public method there.
-        //
-        // if (spawner != null && spawner.isActiveAndEnabled)
-        // {
-        //     spawner.StartNextWave();
-        // }
-        // ————————————————————————
+        // Trigger next wave if spawner exists
+        if (spawner != null && spawner.isActiveAndEnabled)
+        {
+            spawner.StartNextWave();
+        }
     }
 }

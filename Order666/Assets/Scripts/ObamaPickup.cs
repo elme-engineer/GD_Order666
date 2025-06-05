@@ -4,7 +4,7 @@ using UnityEngine;
 public class ObamaPickup : MonoBehaviour
 {
     [Header("How much Dream to restore when eaten")]
-    public float dreamRestoreAmount = 50f;
+    public float dreamRestoreAmount = 10f;
 
     private void Awake()
     {
