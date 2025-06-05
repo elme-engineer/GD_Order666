@@ -30,7 +30,7 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public Animator animator;
 
     [Header("Damage")]
-    [SerializeField] private float dreamDamageCooldown = 1.5f;
+    [SerializeField] private float dreamDamageCooldown = 0.8f;
     [SerializeField] private float dreamDamage = 10;
     private float lastDreamDamageTime = -Mathf.Infinity;
 

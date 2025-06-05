@@ -1,9 +1,34 @@
 fileFormatVersion: 2
-guid: f686ecd70b8a44648ab76ceb6ff0dbae
+guid: 4a56ebd1e3d794adea1cf355eca49dda
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ucopo
+    second: {fileID: 2100000, guid: 421cfbf0b82ffc24389c9ccd0ca77aa5, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: umetal
+    second: {fileID: 2100000, guid: dad7abc73ac215d4bb939fc059cbf48e, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ured
+    second: {fileID: 2100000, guid: 1b57d8c49204c4a4f9a4ecb6bc385ea8, type: 2}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: copo
+    second: {fileID: 2800000, guid: 6703874b464d0524aabd5e67785890e1, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: metal
+    second: {fileID: 2800000, guid: 4d49b2135fe0fff4794c030c23e98ca6, type: 3}
   materials:
     materialImportMode: 2
     materialName: 0

@@ -9,7 +9,7 @@ public class PlayerStatus : MonoBehaviour
 
     [Header("Ammo")]
     [SerializeField] public int maxAmmo = 60;
-    [SerializeField] public int currentAmmo = 30;
+    [SerializeField] public int currentAmmo = 60;
 
     [Header("Events")]
     public UnityEvent onDreamMeterChanged;

@@ -1,9 +1,19 @@
 fileFormatVersion: 2
-guid: 4a56ebd1e3d794adea1cf355eca49dda
+guid: f686ecd70b8a44648ab76ceb6ff0dbae
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: unugget
+    second: {fileID: 2100000, guid: 32e848e2043f86f4fa7962ea077a8421, type: 2}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: nugget
+    second: {fileID: 2800000, guid: b6a0955b83011ad4c86d4d6aaebadb4d, type: 3}
   materials:
     materialImportMode: 2
     materialName: 0
