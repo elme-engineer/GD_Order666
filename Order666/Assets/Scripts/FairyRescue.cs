@@ -3,13 +3,10 @@ using UnityEngine;
 
 public class FairyRescue : MonoBehaviour
 {
-
     public enum RescueReason { Fall, Fryer }
 
     [Header("Safe Points")]
-    public Transform fallSafePoint;
-    public Transform fryerSafePoint;
-
+    public Transform fryerSafePoint; // Only used for fryer
     private Transform safePoint;
 
     [Header("References")]
@@ -17,8 +14,8 @@ public class FairyRescue : MonoBehaviour
     public ParticleSystem fairyParticles;
 
     [Header("Audio")]
-    public AudioSource audioSource; // ← Assign this in Inspector
-    public AudioClip rescueSound;   // ← Assign your sound clip here
+    public AudioSource audioSource;
+    public AudioClip rescueSound;
 
     [Header("Settings")]
     public float fallThreshold = -15f;
@@ -55,7 +52,7 @@ public class FairyRescue : MonoBehaviour
         if (!isRescuing && player.position.y < fallThreshold)
         {
             Debug.Log("Fall detected - initiating rescue");
-            safePoint = fallSafePoint;
+            SetDynamicSafePointFromFall();
             StartCoroutine(RescuePlayer(RescueReason.Fall));
         }
     }
@@ -67,6 +64,35 @@ public class FairyRescue : MonoBehaviour
             Debug.Log("Fryer touched - initiating fryer rescue");
             safePoint = fryerSafePoint;
             StartCoroutine(RescuePlayer(RescueReason.Fryer));
+        }
+    }
+
+    private void SetDynamicSafePointFromFall()
+    {
+        RaycastHit hit;
+        Vector3 checkPosition = player.position + Vector3.up * 2f;
+
+        if (Physics.Raycast(checkPosition, Vector3.down, out hit, 100f))
+        {
+            // Adjust offset direction based on player's current position
+            float offsetX = player.position.x < 0 ? 10f : -10f;
+            float offsetZ = player.position.z < 0 ? 10f : -10f;
+            float offsetY = 20f;
+
+            safePoint = new GameObject("DynamicSafePoint").transform;
+            safePoint.position = new Vector3(
+                player.position.x + offsetX,
+                hit.point.y + offsetY,
+                player.position.z + offsetZ
+            );
+
+            Debug.Log($"✅ Safe point set near fall position at {safePoint.position}");
+        }
+        else
+        {
+            Debug.LogWarning("⚠️ No ground detected - using fallback at Y = 0");
+            safePoint = new GameObject("FallbackSafePoint").transform;
+            safePoint.position = new Vector3(player.position.x, 0f, player.position.z);
         }
     }
 
@@ -137,6 +163,12 @@ public class FairyRescue : MonoBehaviour
 
         SetFairyEffects(false);
         isRescuing = false;
+
+        // Clean up dynamic safe point
+        if (reason == RescueReason.Fall && safePoint != fryerSafePoint)
+        {
+            Destroy(safePoint.gameObject);
+        }
     }
 
     private void SetFairyEffects(bool active)
@@ -152,8 +184,9 @@ public class FairyRescue : MonoBehaviour
         if (fairyLight != null)
             fairyLight.enabled = active;
     }
-
-
 }
+
+
+
 
 
