@@ -1,6 +1,8 @@
 using UnityEngine;
 using Cinemachine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering;
+using UnityEngine.Animations.Rigging;
 
 public class AimManager : MonoBehaviour
 {
@@ -21,8 +23,15 @@ public class AimManager : MonoBehaviour
     [HideInInspector] public float currentFov;
     public float fovSmoothSpeed = 10;
 
+    [SerializeField] Transform aimPos;
+    [SerializeField] float aimSmoothSpeed = 20;
+    [SerializeField] LayerMask aimMask;
 
     [HideInInspector] public Animator animator;
+
+    [SerializeField] private MultiAimConstraint handAimConstraint;
+    [SerializeField] private TwoBoneIKConstraint twoBoneIKConstraint;
+    [SerializeField] private GameObject catWeapon;
 
     private PlayerInputActions inputActions;
     private Vector2 lookInput;
@@ -41,11 +50,11 @@ public class AimManager : MonoBehaviour
 
     void Start()
     {
-        
 
+        catWeapon.SetActive(false);
         virtualCamera = GetComponentInChildren<CinemachineVirtualCamera>();
         hipFov = virtualCamera.m_Lens.FieldOfView;
-        animator = GetComponentInChildren<Animator>();
+        animator = GetComponent<Animator>();
 
         animator.SetLayerWeight(animator.GetLayerIndex("Shooting"), 0); // Disable shooting layer
         SwitchState(hip);        
@@ -110,6 +119,14 @@ public class AimManager : MonoBehaviour
 
         virtualCamera.m_Lens.FieldOfView = Mathf.Lerp(virtualCamera.m_Lens.FieldOfView, currentFov, fovSmoothSpeed * Time.deltaTime);
 
+        Vector2 screenCentre = new Vector2(Screen.width / 2, Screen.height / 2);
+        Ray ray = Camera.main.ScreenPointToRay(screenCentre);
+
+        if(Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, aimMask))
+            aimPos.position = Vector3.Lerp(aimPos.position, hit.point, aimSmoothSpeed * Time.deltaTime);
+
+        UpdateConstraints();
+
         currentState.UpdateState(this);
     }
 
@@ -168,12 +185,31 @@ public class AimManager : MonoBehaviour
         // Toggle the Shooting animation layer
         int shootingLayer = animator.GetLayerIndex("Shooting");
         animator.SetLayerWeight(shootingLayer, isGunMode ? 1 : 0);
+        catWeapon.SetActive(isGunMode ? true : false);
+    }
+
+    void UpdateConstraints()
+    {
+        if (handAimConstraint == null || twoBoneIKConstraint == null) {
+
+            Debug.Log("No hand aim constraint or twoBoneIK constraint");
+            return;
+        }
+
+
+        handAimConstraint.weight = hasGun && isGunMode ? 1f : 0f;
+        twoBoneIKConstraint.weight = hasGun && isGunMode ? 1f : 0f;
+
     }
 
     public void UnlockGunMode()
     {
         hasGun = true;
-        Debug.Log("Gun mode unlocked! Press the SwitchMode input to toggle it.");
+        isGunMode = true;
+        int shootingLayer = animator.GetLayerIndex("Shooting");
+        animator.SetLayerWeight(shootingLayer, 1);
+        catWeapon.SetActive(true);
+        Debug.Log("Gun mode unlocked!");
     }
 
 

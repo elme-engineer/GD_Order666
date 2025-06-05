@@ -1,5 +1,6 @@
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 public class CatGunPickup : MonoBehaviour
 {
@@ -12,12 +13,12 @@ public class CatGunPickup : MonoBehaviour
         {
 
             AimManager aimManager = other.GetComponent<AimManager>();
+            
             if (aimManager != null)
             {
                 aimManager.UnlockGunMode();
-                animator = other.GetComponentInChildren<Animator>();
-
-                animator.SetLayerWeight(animator.GetLayerIndex("Shooting"), 1); // Disable shooting layer
+                //animator = other.GetComponentInChildren<Animator>();
+                //animator.SetLayerWeight(animator.GetLayerIndex("Shooting"), 1);
 
             }
 

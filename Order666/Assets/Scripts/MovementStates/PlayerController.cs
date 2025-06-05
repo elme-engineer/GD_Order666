@@ -89,7 +89,7 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
-        animator = GetComponentInChildren<Animator>();
+        animator = GetComponent<Animator>();
         controller = GetComponent<CharacterController>();
         cam = Camera.main.transform;
         SwitchState(Idle);

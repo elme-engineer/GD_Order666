@@ -12,6 +12,10 @@ public class AmmoPickup : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             PlayerStatus status = other.GetComponentInChildren<PlayerStatus>();
+
+            if (status.currentAmmo == status.maxAmmo)
+                return;
+
             if (status != null)
             {
                 GetComponent<Renderer>().enabled = !GetComponent<Renderer>().enabled;
