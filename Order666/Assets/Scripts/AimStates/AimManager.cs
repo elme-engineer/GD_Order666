@@ -23,7 +23,7 @@ public class AimManager : MonoBehaviour
     [HideInInspector] public float currentFov;
     public float fovSmoothSpeed = 10;
 
-    [SerializeField] Transform aimPos;
+    public  Transform aimPos;
     [SerializeField] float aimSmoothSpeed = 20;
     [SerializeField] LayerMask aimMask;
 
@@ -37,8 +37,6 @@ public class AimManager : MonoBehaviour
     private Vector2 lookInput;
 
     private bool isAiming = false;
-    private bool isShooting = false;
-
     private bool hasGun = false;
     private bool isGunMode = false;
 
@@ -70,8 +68,7 @@ public class AimManager : MonoBehaviour
         inputActions.Player.Aim.started += OnAimStarted;
         inputActions.Player.Aim.canceled += OnAimCanceled;
 
-        inputActions.Player.Shoot.performed += OnShootPerformed;
-        inputActions.Player.Shoot.canceled += OnShootCanceled;
+
 
         inputActions.Player.SwitchMode.performed += OnSwitchMode;
 
@@ -85,8 +82,7 @@ public class AimManager : MonoBehaviour
         inputActions.Player.Aim.started -= OnAimStarted;
         inputActions.Player.Aim.canceled -= OnAimCanceled;
 
-        inputActions.Player.Shoot.performed -= OnShootPerformed;
-        inputActions.Player.Shoot.canceled -= OnShootCanceled;
+
         inputActions.Player.SwitchMode.performed -= OnSwitchMode;
 
 
@@ -157,25 +153,6 @@ public class AimManager : MonoBehaviour
         SwitchState(hip);
     }
 
-    void OnShootPerformed(InputAction.CallbackContext context)
-    {
-        if (!hasGun || !isGunMode) return;
-
-        isShooting = true;
-        if (isAiming)
-        {
-
-            
-            // animator.SetTrigger("Shoot"); // Optional: call actual shooting logic
-            // e.g., FireBullet();
-        }
-    }
-
-    void OnShootCanceled(InputAction.CallbackContext context)
-    {
-        isShooting = false;
-    }
-
     private void OnSwitchMode(InputAction.CallbackContext context)
     {
         if (!hasGun) return;
@@ -212,5 +189,15 @@ public class AimManager : MonoBehaviour
         Debug.Log("Gun mode unlocked!");
     }
 
+
+    public bool getHasGun()
+    {
+        return hasGun;
+    }
+
+    public bool getIsGunMode()
+    {
+        return isGunMode;
+    }
 
 }

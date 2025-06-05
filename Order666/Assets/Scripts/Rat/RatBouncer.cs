@@ -20,6 +20,7 @@ public class RatBouncer : MonoBehaviour
 
     void Start()
     {
+        gameObject.SetActive(false);
         // Choose a random flat direction
         moveDirection = Random.onUnitSphere;
         moveDirection.y = 0f;

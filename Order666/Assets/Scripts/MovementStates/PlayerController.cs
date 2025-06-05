@@ -64,6 +64,9 @@ public class PlayerController : MonoBehaviour
     private GameObject lastPlatformTouched = null;
     private bool wasGroundedLastFrame = false;
 
+    private ObjectDestroyer objectDestroyer;
+    private ActivateSecLevel objectActivator;
+
     private static readonly int HzInputHash = Animator.StringToHash("hzInput");
     private static readonly int VInputHash = Animator.StringToHash("vInput");
 
@@ -91,6 +94,9 @@ public class PlayerController : MonoBehaviour
     {
         animator = GetComponent<Animator>();
         controller = GetComponent<CharacterController>();
+        objectDestroyer = GetComponent<ObjectDestroyer>();
+        objectActivator = GetComponent<ActivateSecLevel>();
+
         cam = Camera.main.transform;
         SwitchState(Idle);
 
@@ -219,7 +225,9 @@ public class PlayerController : MonoBehaviour
         else if (hit.collider.CompareTag("Level2Trigger") && !portasAbertas)
         {
             Debug.Log("Trigger de abertura de portas detetado.");
-            AbrirPortas(); // <- só será chamado 1x
+            AbrirPortas();
+            objectDestroyer.DestoryObjects();
+            objectActivator.ActivateObjects();
             portasAbertas = true;
         }
 

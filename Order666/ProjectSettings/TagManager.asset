@@ -11,6 +11,7 @@ TagManager:
   - Rat
   - Level2Trigger
   - BounceWall
+  - Hamburguer
   layers:
   - Default
   - TransparentFX
@@ -21,7 +22,7 @@ TagManager:
   - Ground
   - Player
   - IgnoreAim
-  - 
+  - Bullet
   - 
   - 
   - 
