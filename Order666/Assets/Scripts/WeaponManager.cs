@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Audio;
 using UnityEngine.InputSystem;
 
 public class WeaponManager : MonoBehaviour
@@ -11,6 +12,9 @@ public class WeaponManager : MonoBehaviour
     private AimManager aimManager;
     private PlayerStatus playerStatus;
     private bool isShooting = false;
+
+    private AudioSource audioSource;
+    public AudioClip shootingAudioClip;
 
     [Header("Bullet Properties")]
     [SerializeField] GameObject bullet;
@@ -55,10 +59,11 @@ public class WeaponManager : MonoBehaviour
         muzzleFlashLight.intensity = 0;
         muzzleFlashParticals = GetComponentInChildren<ParticleSystem>();
 
-        //TODO: audio
-    }
+        audioSource = gameObject.GetComponent<AudioSource>();
 
-    void Update()
+}
+
+void Update()
     {
         fireRateTimer += Time.deltaTime;
 
@@ -92,7 +97,7 @@ public class WeaponManager : MonoBehaviour
     {
         fireRateTimer = 0;
         catGunMouth.LookAt(aimManager.aimPos);
-        //audio playoneshot
+        audioSource.PlayOneShot(shootingAudioClip);
         playerStatus.UseAmmo();
         TriggerMuzzleFlash();
 

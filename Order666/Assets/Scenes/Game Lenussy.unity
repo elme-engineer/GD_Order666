@@ -4549,6 +4549,8 @@ MonoBehaviour:
   ammoPickupPrefab: {fileID: 888422344}
   ammoDropInterval: 2
   ammoDropChance: 0.692
+  drinkPickup: {fileID: 0}
+  drinkDropInterval: 2
 --- !u!1 &723429218 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1272610377336365663, guid: f4746ff2a7fa0324482a792828dad9bb, type: 3}
@@ -18295,7 +18297,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 590fd86e63f764969a4840ce2ad896b1, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
