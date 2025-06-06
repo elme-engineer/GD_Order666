@@ -48,7 +48,8 @@ public class AimManager : MonoBehaviour
 
     void Start()
     {
-
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
         catWeapon.SetActive(false);
         virtualCamera = GetComponentInChildren<CinemachineVirtualCamera>();
         hipFov = virtualCamera.m_Lens.FieldOfView;

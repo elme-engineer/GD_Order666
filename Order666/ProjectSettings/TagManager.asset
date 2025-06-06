@@ -13,6 +13,7 @@ TagManager:
   - BounceWall
   - Hamburguer
   - Plant
+  - EndPlat
   layers:
   - Default
   - TransparentFX

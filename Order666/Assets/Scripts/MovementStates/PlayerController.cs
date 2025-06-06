@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -230,10 +231,13 @@ public class PlayerController : MonoBehaviour
             objectActivator.ActivateObjects();
             portasAbertas = true;
         }
-
         else if (hit.collider.CompareTag("NickiPlat") || hit.collider.CompareTag("SafeZone"))
         {
             HandleNonDamagingCollision(hit);
+        }
+        else if (hit.collider.CompareTag("EndPlat"))
+        {
+            SceneManager.LoadScene("Cutscene");
         }
 
         // Estas verificações devem ser separadas pois não são exclusivas

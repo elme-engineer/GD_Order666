@@ -38,7 +38,7 @@ public class PlayerVFXController : MonoBehaviour
 
         if (lens != null)
         {
-            if (healthPercent <= 0.3f)
+            if (healthPercent <= 0.50f)
             {
                 lens.active = true;
                 lens.intensity.value = Mathf.Sin(Time.time * 3f) * 0.50f;
