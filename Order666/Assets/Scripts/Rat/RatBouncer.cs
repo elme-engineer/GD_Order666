@@ -12,15 +12,29 @@ public class RatBouncer : MonoBehaviour
     [Range(0f, 1f)]
     public float ammoDropChance = 0.6f;
 
+    [Header("Bad Pickup Drops")]
+    public GameObject drinkPickup;
+    public float drinkDropInterval = 2f;
+
     private Vector3 moveDirection;
-    private float dropTimer;
+    private float ammoDropTimer;
+    private float drinkDropTimer;
+    private float rotationResetTimer;
 
     private Transform player;
     private PlayerStatus playerStatus;
 
+    private Vector3 initialPosition;
+    private Quaternion initialRotation;
+
     void Start()
     {
         gameObject.SetActive(false);
+
+        // Save initial transform state
+        initialPosition = transform.position;
+        initialRotation = transform.rotation;
+
         // Choose a random flat direction
         moveDirection = Random.onUnitSphere;
         moveDirection.y = 0f;
@@ -29,32 +43,51 @@ public class RatBouncer : MonoBehaviour
         player = GameObject.FindGameObjectWithTag("Player")?.transform;
         if (player != null)
             playerStatus = player.GetComponentInChildren<PlayerStatus>();
-
-     //   Debug.Log("Ammo: " + playerStatus.currentAmmo);
     }
-
 
     void Update()
     {
-        // Handle movement
+        if (transform.position.y <= -15f)
+        {
+            transform.position = initialPosition;
+        }
+
+        // === Movement ===
         Vector3 nextPosition = transform.position + moveDirection * moveSpeed * Time.deltaTime;
 
-        // Raycast to detect bounce surfaces
         if (Physics.Raycast(transform.position, moveDirection, out RaycastHit hit, bounceCheckDistance))
         {
             moveDirection = Vector3.Reflect(moveDirection, hit.normal);
-            moveDirection.y = 0f; // Stay horizontal
+            moveDirection.y = 0f;
             moveDirection.Normalize();
         }
 
         transform.position = nextPosition;
 
-        // Ammo drop logic
-        dropTimer += Time.deltaTime;
-        if (dropTimer >= ammoDropInterval)
+        // === Timers ===
+        ammoDropTimer += Time.deltaTime;
+        drinkDropTimer += Time.deltaTime;
+        rotationResetTimer += Time.deltaTime;
+
+        // === Ammo drop ===
+        if (ammoDropTimer >= ammoDropInterval)
         {
             TryDropAmmo();
-            dropTimer = 0f;
+            ammoDropTimer = 0f;
+        }
+
+        // === Bad pickup logic ===
+        if (drinkDropTimer >= drinkDropInterval)
+        {
+            TryDropDrink();
+            drinkDropTimer = 0f;
+        }
+
+        // === Reset rotation ===
+        if (rotationResetTimer >= 7f)
+        {
+            transform.rotation = initialRotation;
+            rotationResetTimer = 0f;
         }
     }
 
@@ -69,11 +102,23 @@ public class RatBouncer : MonoBehaviour
             if (roll <= ammoDropChance)
             {
                 Vector3 dropPosition = transform.position - moveDirection.normalized * 1.5f;
-                GameObject ammo = Instantiate(ammoPickupPrefab, dropPosition, Quaternion.identity);
-                //Debug.Log("Parent Position: " + ammo.transform.position + " | Child Local: " + ammo.transform.GetChild(0).localPosition);
-
+                Instantiate(ammoPickupPrefab, dropPosition, Quaternion.identity);
             }
         }
     }
 
+    void TryDropDrink()
+    {
+        if (drinkPickup == null || playerStatus == null)
+            return;
+
+        if (playerStatus.currentAmmo > playerStatus.maxAmmo / 2)
+        {
+            if (Random.value <= 0.5f)
+            {
+                Vector3 dropPosition = transform.position + Vector3.up;
+                Instantiate(drinkPickup, dropPosition, Quaternion.identity);
+            }
+        }
+    }
 }

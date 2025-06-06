@@ -1,28 +1,28 @@
 using System.Collections;
 using UnityEngine;
 
-public class AmmoPickup : MonoBehaviour
+public class DrinkPickup : MonoBehaviour
 {
-    public int ammoAmount = 10;
+    public int dmgAmount = 30;
     public AudioSource activationAudio;
-    public AudioClip audioClipAmmoCollect;
+    public AudioClip audioDrinkCollect;
+    private bool isConsumed = false;
+
 
     void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player"))
+        if (isConsumed || other.CompareTag("Player"))
         {
             PlayerStatus status = other.GetComponentInChildren<PlayerStatus>();
 
-            if (status.currentAmmo == status.maxAmmo)
-                return;
-
             if (status != null)
             {
+                isConsumed = true;
                 GetComponent<Collider>().enabled = false;
                 GetComponent<Renderer>().enabled = !GetComponent<Renderer>().enabled;
-                status.AddAmmo(ammoAmount);
+                status.TakeDreamDamage(dmgAmount);
                 StartCoroutine(DestroyAfterSound());
-               // Debug.Log("Ammo collected. New ammo: " + status.currentAmmo);
+
             }
         }
     }
@@ -30,8 +30,8 @@ public class AmmoPickup : MonoBehaviour
 
     IEnumerator DestroyAfterSound()
     {
-        activationAudio.PlayOneShot(audioClipAmmoCollect);
-        yield return new WaitForSeconds(audioClipAmmoCollect.length);
+        activationAudio.PlayOneShot(audioDrinkCollect);
+        yield return new WaitForSeconds(audioDrinkCollect.length);
         Destroy(gameObject);
     }
 }
