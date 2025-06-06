@@ -1,21 +1,15 @@
 using UnityEngine;
-
-#if UNITY_EDITOR
-using UnityEditor; // This lets us stop Play Mode in the Unity Editor
-#endif
+using UnityEngine.SceneManagement;
+using System.Collections;
 
 public class QuitButton : MonoBehaviour
 {
+    public string sceneToLoad = "MainMenu"; 
+
     public void QuitGame()
     {
-        Debug.Log("Quit Game");
+        Debug.Log("Returning to scene: " + sceneToLoad);
 
-        // This works only in the built game
-        Application.Quit();
-
-        // This part works in the Unity Editor
-        #if UNITY_EDITOR
-        EditorApplication.isPlaying = false;
-        #endif
+        SceneManager.LoadScene(sceneToLoad);
     }
 }
