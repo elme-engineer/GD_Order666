@@ -6,6 +6,12 @@ public class AmmoPickup : MonoBehaviour
     public int ammoAmount = 10;
     public AudioSource activationAudio;
     public AudioClip audioClipAmmoCollect;
+    [SerializeField] float timeToDestroy = 8;
+
+    private void Start()
+    {
+        //Destroy(gameObject, timeToDestroy);
+    }
 
     void OnTriggerEnter(Collider other)
     {
@@ -32,6 +38,7 @@ public class AmmoPickup : MonoBehaviour
     {
         activationAudio.PlayOneShot(audioClipAmmoCollect);
         yield return new WaitForSeconds(audioClipAmmoCollect.length);
-        Destroy(gameObject);
+        if(gameObject != null)
+            Destroy(gameObject);
     }
 }
