@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement; // Needed for scene loading
 
 public class DreamMeterUI : MonoBehaviour
 {
@@ -11,6 +12,10 @@ public class DreamMeterUI : MonoBehaviour
     public Sprite dream3; // 41–60%
     public Sprite dream4; // 61–80%
     public Sprite dream5; // 81–100%
+
+    public string cutsceneSceneName = "Game Over"; // Make sure this matches the scene name exactly
+
+    private bool hasLost = false;
 
     private void Start()
     {
@@ -32,5 +37,15 @@ public class DreamMeterUI : MonoBehaviour
             dreamImage.sprite = dream2;
         else
             dreamImage.sprite = dream1;
+
+        if (percentage <= 0f && !hasLost)
+        {
+            hasLost = true;
+            Debug.Log("Dream Meter reached 0. Loading scene: " + cutsceneSceneName);
+            SceneManager.LoadScene(cutsceneSceneName);
+        }
     }
 }
+
+
+

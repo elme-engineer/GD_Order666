@@ -2,8 +2,14 @@ using UnityEngine;
 
 public class AnimationEventReceiver : MonoBehaviour
 {
-    public PlayerController playerController;
-    
+    private PlayerController playerController;
+
+
+
+    private void Start()
+    {
+        playerController = gameObject.GetComponent<PlayerController>();
+    }
     public void Jumped()
     {
         if (playerController != null)

@@ -4,12 +4,12 @@ using UnityEngine.Events;
 public class PlayerStatus : MonoBehaviour
 {
     [Header("Dream Meter (like HP)")]
-    [SerializeField] private float maxDreamMeter = 100f;
+    [SerializeField] private float maxDreamMeter = 150f;
     [SerializeField] private float currentDreamMeter;
 
     [Header("Ammo")]
-    [SerializeField] private int maxAmmo = 30;
-    [SerializeField] private int currentAmmo;
+    [SerializeField] public int maxAmmo = 60;
+    [SerializeField] public int currentAmmo = 60;
 
     [Header("Events")]
     public UnityEvent onDreamMeterChanged;
@@ -19,7 +19,7 @@ public class PlayerStatus : MonoBehaviour
     private void Awake()
     {
         currentDreamMeter = maxDreamMeter;
-        currentAmmo = maxAmmo;
+        //currentAmmo = maxAmmo;
     }
 
     // === Dream Meter Methods ===
@@ -65,6 +65,13 @@ public class PlayerStatus : MonoBehaviour
             currentAmmo -= amount;
             onAmmoChanged?.Invoke();
         }
+    }
+
+    public void AddMaxDream(int amount)
+    {
+        Debug.Log("Heal max " + amount + " dream");
+        maxDreamMeter += amount;
+        currentDreamMeter = maxDreamMeter;
     }
 
     public void AddAmmo(int amount)

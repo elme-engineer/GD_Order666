@@ -1,36 +1,52 @@
-
 using System.Collections;
 using UnityEngine;
 
 public class ExplosionManager : MonoBehaviour
 {
-    // This method will be called to trigger the explosion and cat ammo logic
-    public void TriggerExplosion(Vector3 position, ParticleSystem explosionEffect, GameObject catAmmo)
+    [Header("References")]
+    public RandomBabySpawner spawner;
+
+    [Header("Settings")]
+    public float obamaSpawnHeight = 1f;
+    public float cleanupDelay = 1f;
+
+    public void HandleExplosion(Vector3 position, ParticleSystem explosionPrefab, GameObject obamaPrefab)
     {
-        StartCoroutine(WaitForExplosionAndShowAmmo(explosionEffect, position, catAmmo));
+        if (this == null || !this.isActiveAndEnabled) return;
+        StartCoroutine(ExplosionSequence(position, explosionPrefab, obamaPrefab));
     }
 
-    // Coroutine to wait for the explosion to finish and show the cat ammo
-   private IEnumerator WaitForExplosionAndShowAmmo(ParticleSystem explosion, Vector3 position, GameObject catAmmo)
-{
-    yield return new WaitForSeconds(explosion.main.duration);
-
-    // Check if the cat ammo exists
-    if (catAmmo != null)
+    private IEnumerator ExplosionSequence(Vector3 position, ParticleSystem explosionPrefab, GameObject obamaPrefab)
     {
-        // Adjust the Z position to make the cat ammo a little higher
-        Vector3 newPosition = new Vector3(position.x, position.y+ 1.5f, position.z ); // Adjust 1f to your desired height
+        // 1) Instantiate and play the explosion effect
+        ParticleSystem explosionInstance = Instantiate(explosionPrefab, position, Quaternion.identity);
+        explosionInstance.Play();
 
-        // Set the new position with the adjusted Z
-        catAmmo.transform.position = newPosition;
+        // 2) Wait for the explosion’s particle duration
+        yield return new WaitForSeconds(explosionInstance.main.duration);
 
-        // Activate the cat ammo
-        catAmmo.SetActive(true);
+        // 3) Spawn an Obama prefab slightly above the explosion point
+        if (obamaPrefab != null)
+        {
+            Vector3 spawnPos = new Vector3(
+                position.x,
+                position.y + obamaSpawnHeight,
+                position.z
+            );
+            Instantiate(obamaPrefab, spawnPos, Quaternion.identity);
+        }
 
-        Debug.Log("Cat Ammo position: " + catAmmo.transform.position);
-    }
-        // Destroy the explosion effect after it finishes
-        Destroy(explosion.gameObject);
+        // 4) Clean up the particle object after a delay
+        Destroy(explosionInstance.gameObject, cleanupDelay);
+
+        // ———— REMOVE THIS BLOCK ————
+        // We used to call StartNextWave() here, but that no longer exists in RandomBabySpawner.
+        // If you want “explosions” to trigger new waves, add your own public method there.
+        //
+        // if (spawner != null && spawner.isActiveAndEnabled)
+        // {
+        //     spawner.StartNextWave();
+        // }
+        // ————————————————————————
     }
 }
-

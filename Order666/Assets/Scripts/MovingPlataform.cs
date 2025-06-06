@@ -3,80 +3,67 @@ using System.Collections;
 
 public class MovingPlatform : MonoBehaviour
 {
-    public PlatformType platformType;
+    [Header("Movement Settings")]
     public float moveDistance = 2f;
     public float moveSpeed = 2f;
     public float delayBetweenMoves = 2f;
-    public float dreamDamage = 10f;
-    public float startDelayTime = 2.5f;
+    public float startDelayTime = 0f;
 
-    private Vector3 startPosition;
-    private Vector3 targetPosition;
-    private bool movingOut = false;
-    private bool isSafeZone;
+    [Header("Platform Link")]
+    public MovingPlatform pairedPlatform;
 
-    private void Start()
+    private Vector3 startPos;
+    private Vector3 upPos;
+    private Vector3 downPos;
+    private bool movingUp = true;
+    public bool isMaster = false;
+
+    void Start()
     {
-        startPosition = transform.position;
-        targetPosition = startPosition + transform.forward * moveDistance;
+        startPos = transform.position;
+        upPos = startPos + Vector3.up * moveDistance;
+        downPos = startPos;
 
-        // Optional: static safe zones for Plane A
-        isSafeZone = (platformType == PlatformType.Safe && transform.CompareTag("SafeZone"));
-
-        if (CompareTag("FriePlat"))
-        {
-            StartCoroutine(DelayedStart());
-        }
-        else if (CompareTag("NickiPlat") && !isSafeZone)
-        {
+        if (isMaster)
             StartCoroutine(MoveRoutine());
-        }
-            
     }
 
-    private IEnumerator DelayedStart()
+    IEnumerator MoveRoutine()
     {
-        yield return new WaitForSeconds(startDelayTime);
-        StartCoroutine(MoveRoutine());
-    }
+        // Optional delay before starting
+        if (startDelayTime > 0f)
+            yield return new WaitForSeconds(startDelayTime);
 
-    private IEnumerator MoveRoutine()
-    {
         while (true)
         {
-            Vector3 start = movingOut ? startPosition : targetPosition;
-            Vector3 end = movingOut ? targetPosition : startPosition;
+            // Toggle direction
+            movingUp = !movingUp;
 
-            float elapsed = 0f;
-            while (elapsed < 1f)
-            {
-                transform.position = Vector3.Lerp(start, end, elapsed);
-                elapsed += Time.deltaTime * moveSpeed;
-                yield return null;
-            }
+            // Start movement on both platforms
+            if (pairedPlatform != null)
+                pairedPlatform.StartCoroutine(pairedPlatform.MoveOneDirection(!movingUp)); // Opposite
 
-            transform.position = end;
-            movingOut = !movingOut;
+            yield return StartCoroutine(MoveOneDirection(movingUp));
 
             yield return new WaitForSeconds(delayBetweenMoves);
         }
     }
 
-    /*
-    private void OnControllerColliderHit(ControllerColliderHit hit)
+    public IEnumerator MoveOneDirection(bool moveUp)
     {
-        Debug.Log("OnControllerColliderHit: Something collided");
+        Vector3 start = transform.position;
+        Vector3 end = moveUp ? upPos : downPos;
 
-        if (platformType == PlatformType.Dangerous && hit.collider.CompareTag("Player"))
+        float elapsed = 0f;
+        float duration = 1f / moveSpeed;
+
+        while (elapsed < duration)
         {
-            Debug.Log("OnControllerColliderHit: Player touched FriePlat!");
-
-            var status = hit.controller.GetComponentInChildren<PlayerStatus>();
-            if (status != null)
-            {
-                status.TakeDreamDamage(dreamDamage);
-            }
+            transform.position = Vector3.Lerp(start, end, elapsed / duration);
+            elapsed += Time.deltaTime;
+            yield return null;
         }
+
+        transform.position = end;
     }
-    */
 }

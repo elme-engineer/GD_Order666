@@ -8,6 +8,11 @@ TagManager:
   - FriePlat
   - NickiPlat
   - CatWeaponPickup
+  - Rat
+  - Level2Trigger
+  - BounceWall
+  - Hamburguer
+  - Plant
   layers:
   - Default
   - TransparentFX
@@ -16,11 +21,11 @@ TagManager:
   - Water
   - UI
   - Ground
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Player
+  - IgnoreAim
+  - Bullet
+  - NuggetBullet
+  - Hamburguer
   - 
   - 
   - 
