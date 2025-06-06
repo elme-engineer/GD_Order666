@@ -12,6 +12,7 @@ TagManager:
   - Level2Trigger
   - BounceWall
   - Hamburguer
+  - Plant
   layers:
   - Default
   - TransparentFX
