@@ -19,5 +19,7 @@ This project was made for the Game Design Course at University of Coimbra (FCTUC
 ### Group Members
 
 Helena Bessa - <uc2024227642@student.uc.pt>
+
 Pedro Bento - <uc2021219351@student.uc.pt>
+
 Sofia Yankova - <uc2021230188@student.uc.pt>
