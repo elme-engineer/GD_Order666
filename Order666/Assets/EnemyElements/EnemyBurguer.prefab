@@ -81,7 +81,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: a56be03e7d075404d83d588587f8f382, type: 3}
       propertyPath: m_Name
-      value: EnemyBurguer 1
+      value: EnemyBurguer
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: a56be03e7d075404d83d588587f8f382, type: 3}
       propertyPath: m_TagString
@@ -121,9 +121,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80dfc1bf5c345b84c84822d9773c0070, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hamburguerHp: 40
+  hamburguerHp: 20
   moveSpeed: 5
-  fireInterval: 2
+  fireInterval: 3
   bulletStart: {fileID: 6124527918530094381}
   bulletPrefab: {fileID: 1066661693311420280, guid: 7bf5d3f3a250b11449000791c203a66a, type: 3}
   bulletSpeed: 150

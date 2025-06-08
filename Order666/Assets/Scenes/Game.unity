@@ -18021,7 +18021,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hamburgerPrefab: {fileID: 6310922681969440050, guid: 9a123cbe281b7c8489b2e8e79eb3cd46, type: 3}
-  spawnInterval: 3
+  spawnInterval: 5
 --- !u!4 &1439214554
 Transform:
   m_ObjectHideFlags: 0

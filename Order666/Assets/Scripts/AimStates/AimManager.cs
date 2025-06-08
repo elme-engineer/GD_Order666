@@ -122,6 +122,9 @@ public class AimManager : MonoBehaviour
         if(Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, aimMask))
             aimPos.position = Vector3.Lerp(aimPos.position, hit.point, aimSmoothSpeed * Time.deltaTime);
 
+        if (Input.GetKey(KeyCode.Escape))
+            EnableCursor();
+
         UpdateConstraints();
 
         currentState.UpdateState(this);
@@ -199,6 +202,15 @@ public class AimManager : MonoBehaviour
     public bool getIsGunMode()
     {
         return isGunMode;
+    }
+
+    void EnableCursor()
+    {
+        Cursor.visible = !Cursor.visible;
+        if (Cursor.lockState == CursorLockMode.Locked)
+            Cursor.lockState = CursorLockMode.Confined;
+        else
+            Cursor.lockState = CursorLockMode.Locked;
     }
 
 }

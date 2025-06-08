@@ -237,6 +237,8 @@ public class PlayerController : MonoBehaviour
         }
         else if (hit.collider.CompareTag("EndPlat"))
         {
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.Confined;
             SceneManager.LoadScene("Cutscene");
         }
 
