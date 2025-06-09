@@ -10,7 +10,7 @@ Windows:
 
 MacOS
 
-MacOs link here...
+<https://mega.nz/file/XtYHXKyZ#ojlE1KHc0Cf3EJYuocoNrRRn4BO-GkGciOfFZBgIhC8>
 
 ## Description
 
